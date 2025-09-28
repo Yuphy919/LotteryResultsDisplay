@@ -144,10 +144,6 @@
         }
       }
       
-      .sparkle {
-        animation: sparkle 2s ease-in-out infinite;
-      }
-      
       /* レスポンシブ調整 */
       @media (orientation: landscape) and (max-height: 600px) {
         .container {
@@ -211,61 +207,17 @@
           let paramsHtml = '';
           
           paramEntries.forEach(([key, value], index) => {
-            const cssClass = getResultClass(value);
-            const emoji = getResultEmoji(value);
             
             paramsHtml += `
-              <div class="result-item ${cssClass}" style="animation-delay: ${0.2 + index * 0.2}s;">
-                <div class="result-value">${emoji} ${escapeHtml(value)} ${emoji}</div>
+              <div class="result-item" style="animation-delay: ${0.2 + index * 0.2}s;">
+                <div class="result-value">${escapeHtml(value)}</div>
               </div>
             `;
           });
           
           paramsListElement.innerHTML = paramsHtml;
           
-          // 特別な結果の場合はアニメーションを追加
-          if (paramEntries.some(([key, value]) => isSpecialResult(value))) {
-            setTimeout(() => {
-              document.querySelectorAll('.result-item').forEach(item => {
-                item.classList.add('sparkle');
-              });
-            }, 1000);
-          }
         }
-      }
-      
-      // 結果に応じてCSSクラスを返す
-      function getResultClass(value) {
-        const lowerValue = value.toLowerCase();
-        
-        if (lowerValue.includes('大吉') || lowerValue.includes('特等') || lowerValue.includes('1等')) {
-          return 'lucky';
-        } else if (lowerValue.includes('中吉') || lowerValue.includes('吉') || lowerValue.includes('2等') || lowerValue.includes('当選')) {
-          return 'good';
-        } else if (lowerValue.includes('凶') || lowerValue.includes('大凶') || lowerValue.includes('ハズレ') || lowerValue.includes('残念')) {
-          return 'bad';
-        }
-        return 'normal';
-      }
-      
-      // 結果に応じて絵文字を返す
-      function getResultEmoji(value) {
-        const lowerValue = value.toLowerCase();
-        
-        if (lowerValue.includes('大吉') || lowerValue.includes('特等') || lowerValue.includes('1等')) {
-          return '🎉';
-        } else if (lowerValue.includes('中吉') || lowerValue.includes('吉') || lowerValue.includes('2等') || lowerValue.includes('当選')) {
-          return '✨';
-        } else if (lowerValue.includes('凶') || lowerValue.includes('大凶') || lowerValue.includes('ハズレ') || lowerValue.includes('残念')) {
-          return '😅';
-        }
-        return '🎯';
-      }
-      
-      // 特別な結果かどうかを判定
-      function isSpecialResult(value) {
-        const lowerValue = value.toLowerCase();
-        return lowerValue.includes('大吉') || lowerValue.includes('特等') || lowerValue.includes('1等');
       }
       
       // HTMLエスケープ関数（XSS対策）
