@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>くじ引き結果</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f5f5f5;
+      }
+      
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      
+      h1 {
+        color: #333;
+        text-align: center;
+      }
+      
+      .param-section {
+        margin: 20px 0;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+      }
+      
+      .param-item {
+        margin: 10px 0;
+        padding: 8px;
+        background-color: white;
+        border-left: 4px solid #007bff;
+      }
+      
+      .param-name {
+        font-weight: bold;
+        color: #007bff;
+      }
+      
+      .param-value {
+        color: #333;
+        margin-left: 10px;
+      }
+      
+      .no-params {
+        color: #666;
+        font-style: italic;
+        text-align: center;
+        padding: 20px;
+      }
+      
+      .url-display {
+        background-color: #e9ecef;
+        padding: 10px;
+        border-radius: 5px;
+        font-family: monospace;
+        word-break: break-all;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div class="container">
+      <h1>くじ引き結果</h1>
+            
+      <div class="param-section">
+        <div id="params-list"></div>
+      </div>
+    </div>
+
+    <script>
+      // URLパラメータを取得して表示する関数
+      function displayUrlParameters() {
+        
+        // URLSearchParamsを使用してパラメータを取得
+        const urlParams = new URLSearchParams(window.location.search);
+        const paramsListElement = document.getElementById('params-list');
+        
+        // パラメータが存在するかチェック
+        const paramEntries = Array.from(urlParams.entries());
+        
+        if (paramEntries.length === 0) {
+          paramsListElement.innerHTML = '<div class="no-params">URLパラメータがありません</div>';
+        } else {
+          let paramsHtml = '';
+          
+          paramEntries.forEach(([key, value]) => {
+            paramsHtml += `
+              <div class="param-item">
+                ${escapeHtml(value)}
+              </div>
+            `;
+          });
+          
+          paramsListElement.innerHTML = paramsHtml;
+        }
+      }
+      
+      // HTMLエスケープ関数（XSS対策）
+      function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      }
+      
+      // 特定のパラメータの値を取得する関数
+      function getParameter(paramName) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(paramName);
+      }
+      
+      // パラメータが変更された時に自動更新
+      window.addEventListener('popstate', displayUrlParameters);
+      
+      // ページ読み込み時に実行
+      document.addEventListener('DOMContentLoaded', displayUrlParameters);
+      
+      // デモ用：コンソールに便利な関数を提供
+      console.log('URLパラメータ操作用の関数:');
+      console.log('- getParameter("パラメータ名"): 特定のパラメータの値を取得');
+      console.log('- displayUrlParameters(): パラメータ表示を更新');
+      console.log('');
+      console.log('例: getParameter("name") で nameパラメータの値を取得できます');
+    </script>
+  </body>
+</html>
